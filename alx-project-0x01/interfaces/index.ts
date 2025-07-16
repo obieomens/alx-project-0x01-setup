@@ -1,5 +1,5 @@
 export interface PostProps {
-    userID: number;
+    userId: number;
     id: number;
     title: string;
     body: string;
