@@ -4,11 +4,11 @@ import UserModal from "@/components/common/UserModal";
 import { UserProps } from "@/interfaces";
 import { useState } from "react";
 
-interface UsersPageProps {
+interface UsersProps {
   users: UserProps[];
 }
 
-const UsersPage: React.FC<UsersPageProps> = ({ users }) => {
+const Users: React.FC<UsersProps> = ({ users }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [userList, setUserList] = useState<UserProps[]>(users);
 
@@ -56,4 +56,4 @@ export async function getStaticProps() {
   };
 }
 
-export default UsersPage;
+export default Users;
