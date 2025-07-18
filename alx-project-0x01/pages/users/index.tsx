@@ -1,39 +1,59 @@
 import Header from "@/components/layout/Header";
+import UserCard from "@/components/common/UserCard";
+import UserModal from "@/components/common/UserModal";
 import { UserProps } from "@/interfaces";
+import { useState } from "react";
 
-interface UsersProps {
+interface UsersPageProps {
   users: UserProps[];
 }
 
-const Users: React.FC<UsersProps> = ({ users }) => {
+const UsersPage: React.FC<UsersPageProps> = ({ users }) => {
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [userList, setUserList] = useState<UserProps[]>(users);
+
+  const handleAddUser = (newUser: UserProps) => {
+    const updatedUser = { ...newUser, id: userList.length + 1 };
+    setUserList([...userList, updatedUser]);
+  };
+
   return (
-    <div>
-      <h2 className="text-xl font-bold mb-4">User List</h2>
-      <ul className="space-y-4">
-        {users.map((user) => (
-          <li key={user.id} className="p-4 border rounded">
-            <h3 className="text-lg font-semibold">{user.name} (@{user.username})</h3>
-            <p>Email: {user.email}</p>
-            <p>Phone: {user.phone}</p>
-            <p>Company: {user.company.name}</p>
-            <p>Website: {user.website}</p>
-            <p>Address: {user.address.street}, {user.address.city}</p>
-          </li>
-        ))}
-      </ul>
+    <div className="flex flex-col h-screen">
+      <Header />
+      <main className="p-4">
+        <div className="flex justify-between mb-4">
+          <h1 className="text-2xl font-semibold">User List</h1>
+          <button
+            onClick={() => setModalOpen(true)}
+            className="bg-blue-700 px-4 py-2 rounded-full text-white"
+          >
+            Add User
+          </button>
+        </div>
+
+        <div className="grid grid-cols-3 gap-4">
+          {userList.map((user: UserProps) => (
+            <UserCard user={user} key={user.id} />
+          ))}
+        </div>
+      </main>
+
+      {isModalOpen && (
+        <UserModal onClose={() => setModalOpen(false)} onSubmit={handleAddUser} />
+      )}
     </div>
   );
 };
 
 export async function getStaticProps() {
-  const response = await fetch("https://jsonplaceholder.typicode.com/users")
-  const users = await response.json()
+  const response = await fetch("https://jsonplaceholder.typicode.com/users");
+  const users = await response.json();
 
   return {
     props: {
       users,
-    }
-  }
+    },
+  };
 }
 
-export default Users;
+export default UsersPage;
